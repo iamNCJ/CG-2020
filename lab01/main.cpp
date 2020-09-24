@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include "ppm.h"
 
 const int N = 2000;
 
@@ -14,45 +15,22 @@ struct Pixel {
     unsigned char R, G, B;
 };
 
-void ppmRead(char *filename, unsigned char *data, int *w, int *h) {
-    char header[1024];
-    FILE *fp = nullptr;
-    int line = 0;
-
-    fp = fopen(filename, "rb");
-    while (line < 2) {
-        fgets(header, 1024, fp);
-        if (header[0] != '#') {
-            ++line;
-        }
-    }
-    sscanf(header, "%d %d\n", w, h);
-    fgets(header, 20, fp);
-    fread(data, (*w) * (*h) * 3, 1, fp);
-
-    fclose(fp);
-}
-
-void ppmWrite(const char *filename, unsigned char *data, int w, int h) {
-    FILE *fp;
-    fp = fopen(filename, "wb");
-
-    fprintf(fp, "P6\n%d %d\n255\n", w, h);
-    fwrite(data, w * h * 3, 1, fp);
-
-    fclose(fp);
-}
-
 int main(int argc, char **argv) {
     unsigned char data[400 * 300 * 3] = {0};
     Point points[N * 4];
     auto *pixel = (Pixel *) data;
-    double x_c, y_c, a, b, theta;
-    x_c = 200;
-    y_c = 150;
-    a = 100;
-    b = 50;
-    theta = 30;
+    double x_c, y_c, a, b, theta = 0;
+    if (argc < 5 || argc > 6) {
+        std::cout << "Usage: Xc Yc a b [theta]" << std::endl;
+        exit(0);
+    }
+    x_c = std::stod(argv[1]);
+    y_c = std::stod(argv[2]);
+    a = std::stod(argv[3]);
+    b = std::stod(argv[4]);
+    if (argc == 6) {
+        theta = std::stod(argv[5]);
+    }
 
     // Step 1 - Scan convert an ellipse at the origin point
     points[0] = {a, 0};
@@ -79,6 +57,6 @@ int main(int argc, char **argv) {
         pixel[y * 400 + x] = {255, 255, 255};
     }
 
-    ppmWrite("../test.ppm", data, 400, 300);
+    ppmWrite("test.ppm", data, 400, 300);
     return 0;
 }
