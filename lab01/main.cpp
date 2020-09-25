@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
     // prepare constants
     double sin_delta = std::sin(M_PI / 2 / N);
     double cos_delta = std::cos(M_PI / 2 / N);
-    // Iteration
+    // iteration
     for (int i = 1; i < N; ++i) {
         double x = points[i - 1].x * cos_delta - a * points[i - 1].y * sin_delta / b;
         double y = points[i - 1].y * cos_delta + b * points[i - 1].x * sin_delta / a;
@@ -54,11 +54,31 @@ int main(int argc, char **argv) {
     // Step 2 - Rotate the ellipse and move it to (Xc, Yc)
     double sin_beta = std::sin(M_PI / 180 * theta);
     double cos_beta = std::cos(M_PI / 180 * theta);
+    int x_min = 400, x_max = 0, y_min = 300, y_max = 0;
     // map into new coordinate system
     for (auto &point : points) {
         int x = std::max(0, std::min(int(point.x * cos_beta - point.y * sin_beta + x_c), 399));
         int y = std::max(0, std::min(int(point.x * sin_beta + point.y * cos_beta + y_c), 299));
         pixel[y * 400 + x] = {255, 255, 255};
+        x_min = std::min(x_min, x);
+        x_max = std::max(x_max, x);
+        y_min = std::min(y_min, y);
+        y_max = std::max(y_max, y);
+    }
+
+    // Step 3 - Fill the ellipse
+    for (int y = y_min + 1; y < y_max; ++y) {
+        bool flag = false;
+        for (int x = x_min + 1; x < x_max; ++x) {
+            if (!flag && !pixel[y * 400 + x].R && pixel[y * 400 + x - 1].R) {
+                flag = true;
+            } else if (flag && pixel[y * 400 + x].R) {
+                break;
+            }
+            if (flag) {
+                pixel[y * 400 + x] = {255, 255, 255};
+            }
+        }
     }
 
     ppmWrite("test.ppm", data, 400, 300);
