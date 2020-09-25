@@ -33,12 +33,15 @@ int main(int argc, char **argv) {
     }
 
     // Step 1 - Scan convert an ellipse at the origin point
+    // initial points
     points[0] = {a, 0};
     points[N] = {0, b};
     points[2 * N] = {-a, 0};
     points[3 * N] = {0, -b};
+    // prepare constants
     double sin_delta = std::sin(M_PI / 2 / N);
     double cos_delta = std::cos(M_PI / 2 / N);
+    // Iteration
     for (int i = 1; i < N; ++i) {
         double x = points[i - 1].x * cos_delta - a * points[i - 1].y * sin_delta / b;
         double y = points[i - 1].y * cos_delta + b * points[i - 1].x * sin_delta / a;
@@ -51,6 +54,7 @@ int main(int argc, char **argv) {
     // Step 2 - Rotate the ellipse and move it to (Xc, Yc)
     double sin_beta = std::sin(M_PI / 180 * theta);
     double cos_beta = std::cos(M_PI / 180 * theta);
+    // map into new coordinate system
     for (auto &point : points) {
         int x = std::max(0, std::min(int(point.x * cos_beta - point.y * sin_beta + x_c), 399));
         int y = std::max(0, std::min(int(point.x * sin_beta + point.y * cos_beta + y_c), 299));
