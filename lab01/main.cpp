@@ -3,6 +3,7 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
+#include <cstring>
 #include "ppm.h"
 
 const int N = 2000;
@@ -19,18 +20,18 @@ int main(int argc, char **argv) {
     unsigned char data[400 * 300 * 3] = {0};
     Point points[N * 4];
     auto *pixel = (Pixel *) data;
-    double x_c, y_c, a, b, theta = 0;
-    if (argc < 5 || argc > 6) {
-        std::cout << "Usage: Xc Yc a b [theta]" << std::endl;
+    double x_c, y_c, a, b, theta;
+    bool fill;
+    if (argc != 7) {
+        std::cout << "Usage: Xc Yc a b theta fill?(0 for no)" << std::endl;
         exit(0);
     }
     x_c = std::stod(argv[1]);
     y_c = std::stod(argv[2]);
     a = std::stod(argv[3]);
     b = std::stod(argv[4]);
-    if (argc == 6) {
-        theta = std::stod(argv[5]);
-    }
+    theta = std::stod(argv[5]);
+    fill = std::strcmp(argv[6], "no");
 
     // Step 1 - Scan convert an ellipse at the origin point
     // initial points
@@ -67,19 +68,19 @@ int main(int argc, char **argv) {
     }
 
     // Step 3 - Fill the ellipse
-    for (int y = y_min + 1; y < y_max; ++y) {
-        bool flag = false;
-        for (int x = x_min + 1; x < x_max; ++x) {
-            if (!flag && !pixel[y * 400 + x].R && pixel[y * 400 + x - 1].R) {
-                flag = true;
-            } else if (flag && pixel[y * 400 + x].R) {
-                break;
+    if (fill)
+        for (int y = y_min; y <= y_max; ++y) {
+            int x_line_min = 400, x_line_max = 0;
+            for (int x = x_min; x <= x_max; ++x) {
+                if (pixel[y * 400 + x].R) {
+                    x_line_min = std::min(x_line_min, x);
+                    x_line_max = std::max(x_line_max, x);
+                }
             }
-            if (flag) {
+            for (int x = x_line_min + 1; x < x_line_max; ++x) {
                 pixel[y * 400 + x] = {255, 255, 255};
             }
         }
-    }
 
     ppmWrite("test.ppm", data, 400, 300);
     return 0;
