@@ -13,3 +13,6 @@ _deps
 # macOS
 .DS_Store
 lab01/a.out
+
+# VS Code
+.vscode
