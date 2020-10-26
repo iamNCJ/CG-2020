@@ -7,21 +7,10 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/
 
 project(lab04)
 
-#find_package(OpenGL REQUIRED)
-
 find_package(GLUT REQUIRED)
 
 add_executable(lab04 main.cpp)
 
-## Additional Include Directories
-#include_directories(${OpenGL_INCLUDE_DIRS})
-#
-#message("${OpenGL_INCLUDE_DIRS}")
-#
-## Additional Library Directories
-#link_directories(${OpenGL_LIB_DIR})
-#
-## Additional Dependencies
-#target_link_libraries(lab04 ${OpenGL_LIBS})
+find_package(glm CONFIG REQUIRED)
 
-target_link_libraries(lab04 PRIVATE GLUT::GLUT)
+target_link_libraries(lab04 PRIVATE GLUT::GLUT glm)
