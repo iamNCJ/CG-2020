@@ -14,7 +14,7 @@ float viewDirX = 0.0f, viewDirY = 0.0f, viewDirZ = -1.0f, lastViewDirX, lastView
 
 bool isShiftDown, isWDown, isSDown, isADown, isDDown, isSpaceDown;
 
-void render() {
+void modeling() {
     float angle1 = 1 * time;
     float angle2 = 3 * time;
     float angle3 = 2 * time;
@@ -56,44 +56,13 @@ void render() {
         glTranslated(-0.4, 0, 0);
     }
     glRotatef(-angle3, 0, 0.5, 0.5);
-
-    glutPostRedisplay();
-    if (isShiftDown) {
-        cameraY -= 0.01;
-    }
-    if (isSpaceDown) {
-        cameraY += 0.01;
-    }
-    if (isWDown) {
-        cameraX += viewDirX * 0.01;
-        cameraZ += viewDirZ * 0.01;
-    }
-    if (isSDown) {
-        cameraX -= viewDirX * 0.01;
-        cameraZ -= viewDirZ * 0.01;
-    }
-    if (isADown) {
-        cameraX += viewDirZ * 0.01;
-        cameraZ -= viewDirX * 0.01;
-    }
-    if (isDDown) {
-        cameraX -= viewDirZ * 0.01;
-        cameraZ += viewDirX * 0.01;
-    }
-    glLoadIdentity();
-    gluLookAt(cameraX, cameraY, cameraZ, cameraX + viewDirX, cameraY + viewDirY, cameraZ + viewDirZ, 0.0f, 1.0f, 0.0f);
-}
-
-void timerFunc(int nTimerID) {
-    ++time;
-    glutPostRedisplay();
-    glutTimerFunc(100, timerFunc, 0);
 }
 
 static void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    render();
-
+    modeling();
+    glLoadIdentity();
+    gluLookAt(cameraX, cameraY, cameraZ, cameraX + viewDirX, cameraY + viewDirY, cameraZ + viewDirZ, 0.0f, 1.0f, 0.0f);
     glutSwapBuffers();
 }
 
@@ -121,10 +90,6 @@ static void click(int button, int state, int _x, int _y) {
     lastViewDirX = viewDirX;
     lastViewDirY = viewDirY;
     glutPostRedisplay();
-}
-
-static void idle() {
-    ++time;
 }
 
 static void wheel(int wheel, int dir, int _x, int _y) {
@@ -189,6 +154,33 @@ static void specialDown(int key, int _x, int _y) {
 static void specialUp(int key, int x, int y) {
     if (key == GLUT_KEY_SHIFT_L || key == GLUT_KEY_SHIFT_R) {
         isShiftDown = false;
+    }
+}
+
+static void idle() {
+    ++time;
+    glutPostRedisplay();
+    if (isShiftDown) {
+        cameraY -= 0.01;
+    }
+    if (isSpaceDown) {
+        cameraY += 0.01;
+    }
+    if (isWDown) {
+        cameraX += viewDirX * 0.01;
+        cameraZ += viewDirZ * 0.01;
+    }
+    if (isSDown) {
+        cameraX -= viewDirX * 0.01;
+        cameraZ -= viewDirZ * 0.01;
+    }
+    if (isADown) {
+        cameraX += viewDirZ * 0.01;
+        cameraZ -= viewDirX * 0.01;
+    }
+    if (isDDown) {
+        cameraX -= viewDirZ * 0.01;
+        cameraZ += viewDirX * 0.01;
     }
 }
 
