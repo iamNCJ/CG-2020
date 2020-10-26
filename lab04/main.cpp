@@ -1,19 +1,16 @@
 #define GL_SILENCE_DEPRECATION
 
-#include <cstdio>
 #include <GL/freeglut.h>
 
 int SCR_WIDTH = 800;
 int SCR_HEIGHT = 600;
 
-int mousex, mousey;
+int lastMouseX, lastMouseY;
 int time = 0;
 
-
 float angle = 60.0;
-float x = 0.0f, y = 0.0f, z = 2.0f;
-float lx = 0.0f, ly = 0.0f, lz = -1.0f;
-float lastlx, lastly, lastlz;
+float cameraX = 0.0f, cameraY = 0.0f, cameraZ = 2.0f;
+float viewDirX = 0.0f, viewDirY = 0.0f, viewDirZ = -1.0f, lastViewDirX, lastViewDirY;
 
 bool isShiftDown, isWDown, isSDown, isADown, isDDown, isSpaceDown;
 
@@ -62,42 +59,35 @@ void render() {
 
     glutPostRedisplay();
     if (isShiftDown) {
-        y -= 0.01;
+        cameraY -= 0.01;
     }
     if (isSpaceDown) {
-        y += 0.01;
+        cameraY += 0.01;
     }
     if (isWDown) {
-        x = x + lx * 0.01;
-        //  y = y + ly * 0.01;
-        z = z + lz * 0.01;
+        cameraX += viewDirX * 0.01;
+        cameraZ += viewDirZ * 0.01;
     }
     if (isSDown) {
-        x = x - lx * 0.01;
-        //  y = y - ly * 0.01;
-        z = z - lz * 0.01;
+        cameraX -= viewDirX * 0.01;
+        cameraZ -= viewDirZ * 0.01;
     }
     if (isADown) {
-        x = x + lz * 0.01;
-        z = z - lx * 0.01;
+        cameraX += viewDirZ * 0.01;
+        cameraZ -= viewDirX * 0.01;
     }
     if (isDDown) {
-        x = x - lz * 0.01;
-        z = z + lx * 0.01;
+        cameraX -= viewDirZ * 0.01;
+        cameraZ += viewDirX * 0.01;
     }
     glLoadIdentity();
-    gluLookAt(x, y, z, x + lx, y + ly, z + lz, 0.0f, 1.0f, 0.0f);
+    gluLookAt(cameraX, cameraY, cameraZ, cameraX + viewDirX, cameraY + viewDirY, cameraZ + viewDirZ, 0.0f, 1.0f, 0.0f);
 }
 
 void timerFunc(int nTimerID) {
     ++time;
     glutPostRedisplay();
     glutTimerFunc(100, timerFunc, 0);
-}
-
-
-static void init() {
-    glClearColor(0.f, 0.f, 0.f, 1.0f);
 }
 
 static void display() {
@@ -117,19 +107,19 @@ static void reshape(int w, int h) {
     gluPerspective(angle, 1.0f * w / h, 0.1, 1000);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(x, y, z, x + lx, y + ly, z + lz, 0.0f, 1.0f, 0.0f);
+    gluLookAt(cameraX, cameraY, cameraZ, cameraX + viewDirX, cameraY + viewDirY, cameraZ + viewDirZ, 0.0f, 1.0f, 0.0f);
 }
 
 static void drag(int _x, int _y) {
-    lx = 0.001 * (_x - mousex) + lastlx;
-    ly = -0.001 * (_y - mousey) + lastly;
+    viewDirX = 0.001 * (_x - lastMouseX) + lastViewDirX;
+    viewDirY = -0.001 * (_y - lastMouseY) + lastViewDirY;
 }
 
 static void click(int button, int state, int _x, int _y) {
-    mousex = _x;
-    mousey = _y;
-    lastlx = lx;
-    lastly = ly;
+    lastMouseX = _x;
+    lastMouseY = _y;
+    lastViewDirX = viewDirX;
+    lastViewDirY = viewDirY;
     glutPostRedisplay();
 }
 
@@ -209,8 +199,7 @@ int main(int argc, char *argv[]) {
     glutInitWindowPosition(0, 0);
     glutCreateWindow("My Solar System");
     glEnable(GL_DEPTH_TEST);
-    init();
-
+    glClearColor(0.f, 0.f, 0.f, 1.0f);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutMotionFunc(drag);
@@ -221,7 +210,6 @@ int main(int argc, char *argv[]) {
     glutSpecialFunc(specialDown);
     glutSpecialUpFunc(specialUp);
     glutIdleFunc(idle);
-
     glutMainLoop();
     return 0;
 }
