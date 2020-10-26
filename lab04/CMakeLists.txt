@@ -11,6 +11,4 @@ find_package(GLUT REQUIRED)
 
 add_executable(lab04 main.cpp)
 
-find_package(glm CONFIG REQUIRED)
-
-target_link_libraries(lab04 PRIVATE GLUT::GLUT glm)
+target_link_libraries(lab04 PRIVATE GLUT::GLUT)
