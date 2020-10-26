@@ -158,7 +158,7 @@ static void specialUp(int key, int x, int y) {
 }
 
 static void idle() {
-    ++time;
+    time = glutGet(GLUT_ELAPSED_TIME) / 10;
     glutPostRedisplay();
     if (isShiftDown) {
         cameraY -= 0.01;
