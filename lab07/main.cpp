@@ -4,7 +4,7 @@
  */
 #ifdef __APPLE__
 #include<glut/glut.h>
-#else
+#elif WIN32
 #include <GL/glut.h>
 #endif
 #include <stdlib.h>
