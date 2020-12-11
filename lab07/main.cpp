@@ -71,6 +71,23 @@ void modeling() {
         glTranslated(-0.4, 0, 0);
     }
     glRotatef(-angle3, 0, 0.5, 0.5);
+
+
+    glPushMatrix ();
+    int i, j;
+    glRotatef(85.0, 1.0, 1.0, 1.0);
+    for (j = 0; j <= 8; j++) {
+        glBegin(GL_LINE_STRIP);
+        for (i = 0; i <= 30; i++)
+            glEvalCoord2f((GLfloat)i/30.0, (GLfloat)j/8.0);
+        glEnd();
+        glBegin(GL_LINE_STRIP);
+        for (i = 0; i <= 30; i++)
+            glEvalCoord2f((GLfloat)j/8.0, (GLfloat)i/30.0);
+        glEnd();
+    }
+    glEvalMesh2( GL_LINE, 0, 20, 0, 20 );
+    glPopMatrix ();
 }
 
 static void display() {
@@ -206,8 +223,11 @@ int main(int argc, char *argv[]) {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE | GLUT_DEPTH);
     glutInitWindowSize(SCR_WIDTH, SCR_HEIGHT);
     glutInitWindowPosition(0, 0);
-    glutCreateWindow("My Solar System");
+    glutCreateWindow("My Dream Car");
+    glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4,0, 1, 12, 4, &ctrlPoints[0][0][0]);
+    glEnable(GL_MAP2_VERTEX_3);
     glEnable(GL_DEPTH_TEST);
+    glShadeModel(GL_FLAT);
     glClearColor(0.f, 0.f, 0.f, 1.0f);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
