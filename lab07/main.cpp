@@ -203,7 +203,7 @@ static void idle() {
 
 int main(int argc, char *argv[]) {
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE | GLUT_DEPTH);
     glutInitWindowSize(SCR_WIDTH, SCR_HEIGHT);
     glutInitWindowPosition(0, 0);
     glutCreateWindow("My Solar System");
