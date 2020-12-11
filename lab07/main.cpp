@@ -1,15 +1,13 @@
-/*  bezsurf.c
- *  This program renders a wireframe Bezier surface,
- *  using two-dimensional evaluators.
- */
+#define GL_SILENCE_DEPRECATION
+
 #ifdef __APPLE__
 #include<glut/glut.h>
 #elif WIN32
 #include <GL/glut.h>
 #endif
-#include <stdlib.h>
+#include <cstdlib>
 
-GLfloat ctrlpoints[4][4][3] = {
+GLfloat ctrlPoints[4][4][3] = {
         {{-1.5, -1.5, 4.0}, {-0.5, -1.5, 2.0},
                 {0.5, -1.5, -1.0}, {1.5, -1.5, 2.0}},
         {{-1.5, -0.5, 1.0}, {-0.5, -0.5, 3.0},
@@ -20,7 +18,7 @@ GLfloat ctrlpoints[4][4][3] = {
                 {0.5, 1.5, 0.0}, {1.5, 1.5, -1.0}}
 };
 
-void display(void)
+void display()
 {
     int i, j;
 
@@ -43,7 +41,7 @@ void display(void)
     glFlush();
 }
 
-void init(void)
+void init()
 {
     glClearColor (0.0, 0.0, 0.0, 0.0);
     /*
@@ -60,7 +58,7 @@ void init(void)
      4   -- order of v ( = degree + 1 )
     */
     glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4,
-            0, 1, 12, 4, &ctrlpoints[0][0][0]);
+            0, 1, 12, 4, &ctrlPoints[0][0][0]);
     glEnable(GL_MAP2_VERTEX_3);
     /*
      glMapGrid2f() -- defines a grid going from u1 to u2; v1 to v2 in
