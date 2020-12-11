@@ -3,7 +3,7 @@
 #ifdef __APPLE__
 #include<glut/glut.h>
 #elif WIN32
-#include <GL/glut.h>
+#include <GL/freeglut.h>
 #endif
 #include <cstdlib>
 #include <cstdio>
