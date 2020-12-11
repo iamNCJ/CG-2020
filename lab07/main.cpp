@@ -1,12 +1,10 @@
 #define GL_SILENCE_DEPRECATION
 
 #ifdef __APPLE__
-#include<glut/glut.h>
+#include <glut/glut.h>
 #elif WIN32
 #include <GL/freeglut.h>
 #endif
-#include <cstdlib>
-#include <cstdio>
 
 GLfloat ctrlPoints[4][4][3] = {
         {{-1.5, -1.5, 4.0}, {-0.5, -1.5, 2.0},
@@ -141,7 +139,6 @@ static void keyboardDown(unsigned char key, int _x, int _y) {
 }
 
 static void keyboardUp(unsigned char key, int x, int y) {
-    printf("%d\n", key);
     switch (key) {
         case 'w':
             isWDown = false;
