@@ -2,7 +2,11 @@
  *  This program renders a wireframe Bezier surface,
  *  using two-dimensional evaluators.
  */
+#ifdef __APPLE__
+#include<glut/glut.h>
+#else
 #include <GL/glut.h>
+#endif
 #include <stdlib.h>
 
 GLfloat ctrlpoints[4][4][3] = {
