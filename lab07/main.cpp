@@ -6,46 +6,50 @@
 #include <GL/freeglut.h>
 #endif
 
-GLfloat ctrlPoints[4][4][3] = {
-        { { -0.5, 0, -0.15 },
-                { -0.325, 0.045, -0.15 },
-                { -0.275, 0.5, -0.15 },
-                { 0, 0.5, -0.15 } },
-        { { -0.5, 0, -0.05 },
-                { -0.325, 0.045, -0.05 },
-                { -0.275, 0.5, -0.05 },
-                { 0, 0.5, -0.05 } },
-        { { -0.5, 0, 0.05 },
-                { -0.325, 0.045, 0.05 },
-                { -0.275, 0.5, 0.05 },
-                { 0, 0.5, 0.05 } },
-        { { -0.5, 0, 0.15 },
-                { -0.325, 0.045, 0.15 },
-                { -0.275, 0.5, 0.15 },
-                { 0, 0.5, 0.15 } },
+GLfloat bezierCtrlPoints[4][4][3] = {
+        {{-0.6, 0, -0.3}, {-0.6, 0, -0.1}, {-0.6, 0, 0.1}, {-0.6, 0, 0.3}},
+        {{-0.45, 0, -0.3}, {-0.45, 0.01, -0.1}, {-0.45, 0.01, 0.1}, {-0.45, 0, 0.3}},
+        {{-0.3, 0, -0.3}, {-0.3, -0.05, -0.1}, {-0.3, -0.05, 0.1}, {-0.3, 0, 0.3}},
+        {{-0.15, 0, -0.3}, {-0.15, 0.2, -0.1}, {-0.15, 0.2, 0.1}, {-0.15, 0, 0.3}},
 };
 
-GLfloat ctrlPoints2[4][4][3] = {
-        { { 0.5, 0, -0.15 },
-          { 0.325, 0.045, -0.15 },
-          { 0.275, 0.5, -0.15 },
-          { 0, 0.5, -0.15 } },
-        { { 0.5, 0, -0.05 },
-          { 0.325, 0.045, -0.05 },
-          { 0.275, 0.5, -0.05 },
-          { 0, 0.5, -0.05 } },
-        { { 0.5, 0, 0.05 },
-          { 0.325, 0.045, 0.05 },
-          { 0.275, 0.5, 0.05 },
-          { 0, 0.5, 0.05 } },
-        { { 0.5, 0, 0.15 },
-          { 0.325, 0.045, 0.15 },
-          { 0.275, 0.5, 0.15 },
-          { 0, 0.5, 0.15 } },
+GLfloat bezierCtrlPoints2[4][4][3] = {
+        {{0.6, 0, -0.3}, {0.6, 0, -0.1}, {0.6, 0, 0.1}, {0.6, 0, 0.3}},
+        {{0.45, 0, -0.3}, {0.45, -0.1, -0.1}, {0.45, -0.1, 0.1}, {0.45, 0, 0.3}},
+        {{0.3, 0, -0.3}, {0.3, 0.23, -0.1}, {0.3, 0.23, 0.1}, {0.3, 0, 0.3}},
+        {{0.15, 0, -0.3}, {0.15, 0.2, -0.1}, {0.15, 0.2, 0.1}, {0.15, 0, 0.3}},
 };
 
-GLfloat knots[8] = { 0.0, 0.0, 0.0, 0.0,
-                     1.0, 1.0, 1.0, 1.0 };
+GLfloat bezierCtrlPoints3[2][4][3] = {
+        {{-0.15, 0, -0.3}, {-0.15, 0.2, -0.1}, {-0.15, 0.2, 0.1}, {-0.15, 0, 0.3}},
+        {{0.15, 0, -0.3}, {0.15, 0.2, -0.1}, {0.15, 0.2, 0.1}, {0.15, 0, 0.3}},
+};
+
+GLfloat ctrlPoints2[4][4][4] = {
+        {{0.5, 0, -0.15, 0.5},
+         {0.325, 0.045, -0.15, 0.5},
+         {0.275, 0.5, -0.15, 0.5},
+         {0, 0.5, -0.15, 0.5}
+        },
+        {{0.5, 0, -0.05, 0.6},
+         {0.325, 0.045, -0.05, 0.6},
+         {0.275, 0.5, -0.05, 0.6},
+         {0, 0.5, -0.05, 0.6}
+        },
+        {{0.5, 0, 0.05, 0.7},
+         {0.325, 0.045, 0.05, 0.7},
+         {0.275, 0.5, 0.05, 0.7},
+         {0, 0.5, 0.05, 0.7}
+        },
+        {{0.5, 0, 0.15, 0.8},
+         {0.325, 0.045, 0.15, 0.8},
+         {0.275, 0.5, 0.15, 0.8},
+         {0, 0.5, 0.15, 0.8}
+        },
+};
+
+GLfloat knots[8] = {0.0, 0.0, 0.0, 0.0,
+                    1.0, 1.0, 1.0, 1.0};
 
 GLUnurbsObj *Nurb;
 
@@ -53,7 +57,6 @@ int SCR_WIDTH = 800;
 int SCR_HEIGHT = 600;
 
 int lastMouseX, lastMouseY;
-int time = 0;
 
 float angle = 60.0;
 float cameraX = 0.0f, cameraY = 0.0f, cameraZ = 2.0f;
@@ -62,18 +65,35 @@ float viewDirX = 0.0f, viewDirY = 0.0f, viewDirZ = -1.0f, lastViewDirX, lastView
 bool isShiftDown, isWDown, isSDown, isADown, isDDown, isSpaceDown;
 
 void modeling() {
-    glColor3f(0.0, 1.0, 0.0);
-    glutWireSphere(0.1, 50, 50);
     // Bezier
-//    glPushMatrix();
-    glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &ctrlPoints[0][0][0]);
+    glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &bezierCtrlPoints[0][0][0]);
     glMapGrid2f(20, 0.0, 1.0, 20, 0.0, 1.0);
     glEvalMesh2(GL_FILL, 0, 20, 0, 20);
+    glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 2, &bezierCtrlPoints3[0][0][0]);
+    glMapGrid2f(20, 0.0, 1.0, 20, 0.0, 1.0);
+    glEvalMesh2(GL_FILL, 0, 20, 0, 20);
+
     // NURB
     gluBeginSurface(Nurb);
-    gluNurbsSurface(Nurb, 8, knots, 8, knots, 4 * 3, 3, &ctrlPoints2[0][0][0], 4, 4, GL_MAP2_VERTEX_3);
+    gluNurbsSurface(Nurb, 8, knots, 8, knots, 4 * 3, 3, &bezierCtrlPoints2[0][0][0], 4, 4, GL_MAP2_VERTEX_3);
     gluEndSurface(Nurb);
-//    glPopMatrix();
+
+    // Polygon
+    glPushMatrix();
+    glTranslatef(0, -0.04, 0);
+    glScalef(1.2, 0.08, 0.6);
+    glutSolidCube(1);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(-0.3, -0.09, -0.3);
+    glutSolidCylinder(0.05, 0.6, 100, 100);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.3, -0.09, -0.3);
+    glutSolidCylinder(0.05, 0.6, 100, 100);
+    glPopMatrix();
 }
 
 static void display() {
@@ -164,6 +184,7 @@ static void keyboardUp(unsigned char key, int x, int y) {
 }
 
 #ifdef WIN32
+
 static void specialDown(int key, int _x, int _y) {
     if (key == GLUT_KEY_SHIFT_L || key == GLUT_KEY_SHIFT_R) {
         isShiftDown = true;
@@ -175,10 +196,10 @@ static void specialUp(int key, int x, int y) {
         isShiftDown = false;
     }
 }
+
 #endif
 
 static void idle() {
-    time = glutGet(GLUT_ELAPSED_TIME) / 10;
     glutPostRedisplay();
     if (isShiftDown) {
         cameraY -= 0.01;
@@ -204,25 +225,19 @@ static void idle() {
     }
 }
 
-void init()
-{
+void init() {
     glClearColor(0.0, 0.0, 0.0, 1.0);
-//    glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &ctrlPoints[0][0][0]);
     glEnable(GL_MAP2_VERTEX_3);
-//    glMapGrid2f(20, 0.0, 1.0, 20, 0.0, 1.0);
     glDepthFunc(GL_LESS);
     glEnable(GL_DEPTH_TEST);
-    //代码开关4：取消下面两行代码，查看曲面显示效果差异
-    //打开自动法矢量开关
     glEnable(GL_AUTO_NORMAL);
-    //允许正则化法矢量
     glEnable(GL_NORMALIZE);
 
-    GLfloat ambient[] = { 0.4, 0.6, 0.2, 1.0 };
-    GLfloat position[] = { 0.0, 1.0, 3.0, 1.0 };
-    GLfloat mat_diffuse[] = { 0.2, 0.4, 0.8, 1.0 };
-    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat mat_shininess[] = { 80.0 };
+    GLfloat ambient[] = {0.4, 0.6, 0.2, 1.0};
+    GLfloat position[] = {0.0, 1.0, 3.0, 1.0};
+    GLfloat mat_diffuse[] = {0.2, 0.4, 0.8, 1.0};
+    GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat mat_shininess[] = {80.0};
     glEnable(GL_LIGHTING);
     glEnable(GL_LIGHT0);
     glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
