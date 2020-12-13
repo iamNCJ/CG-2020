@@ -7,15 +7,47 @@
 #endif
 
 GLfloat ctrlPoints[4][4][3] = {
-        {{-1.5, -1.5, 4.0}, {-0.5, -1.5, 2.0},
-                {0.5, -1.5, -1.0}, {1.5, -1.5, 2.0}},
-        {{-1.5, -0.5, 1.0}, {-0.5, -0.5, 3.0},
-                {0.5, -0.5, 0.0}, {1.5, -0.5, -1.0}},
-        {{-1.5, 0.5, 4.0}, {-0.5, 0.5, 0.0},
-                {0.5, 0.5, 3.0}, {1.5, 0.5, 4.0}},
-        {{-1.5, 1.5, -2.0}, {-0.5, 1.5, -2.0},
-                {0.5, 1.5, 0.0}, {1.5, 1.5, -1.0}}
+        { { -0.5, 0, -0.15 },
+                { -0.325, 0.045, -0.15 },
+                { -0.275, 0.5, -0.15 },
+                { 0, 0.5, -0.15 } },
+        { { -0.5, 0, -0.05 },
+                { -0.325, 0.045, -0.05 },
+                { -0.275, 0.5, -0.05 },
+                { 0, 0.5, -0.05 } },
+        { { -0.5, 0, 0.05 },
+                { -0.325, 0.045, 0.05 },
+                { -0.275, 0.5, 0.05 },
+                { 0, 0.5, 0.05 } },
+        { { -0.5, 0, 0.15 },
+                { -0.325, 0.045, 0.15 },
+                { -0.275, 0.5, 0.15 },
+                { 0, 0.5, 0.15 } },
 };
+
+GLfloat ctrlPoints2[4][4][3] = {
+        { { 0.5, 0, -0.15 },
+          { 0.325, 0.045, -0.15 },
+          { 0.275, 0.5, -0.15 },
+          { 0, 0.5, -0.15 } },
+        { { 0.5, 0, -0.05 },
+          { 0.325, 0.045, -0.05 },
+          { 0.275, 0.5, -0.05 },
+          { 0, 0.5, -0.05 } },
+        { { 0.5, 0, 0.05 },
+          { 0.325, 0.045, 0.05 },
+          { 0.275, 0.5, 0.05 },
+          { 0, 0.5, 0.05 } },
+        { { 0.5, 0, 0.15 },
+          { 0.325, 0.045, 0.15 },
+          { 0.275, 0.5, 0.15 },
+          { 0, 0.5, 0.15 } },
+};
+
+GLfloat knots[8] = { 0.0, 0.0, 0.0, 0.0,
+                     1.0, 1.0, 1.0, 1.0 };
+
+GLUnurbsObj *Nurb;
 
 int SCR_WIDTH = 800;
 int SCR_HEIGHT = 600;
@@ -30,64 +62,18 @@ float viewDirX = 0.0f, viewDirY = 0.0f, viewDirZ = -1.0f, lastViewDirX, lastView
 bool isShiftDown, isWDown, isSDown, isADown, isDDown, isSpaceDown;
 
 void modeling() {
-    float angle1 = 1 * time;
-    float angle2 = 3 * time;
-    float angle3 = 2 * time;
-    glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-    // Center Star
-    glColor3f(0.0, 0.0, 1.0);
-    glutWireSphere(0.2, 50, 50);
-
-    glRotatef(angle1, 0, 1, 0);
-    {
-        glTranslated(0.6, 0, 0);
-        {
-            // Planet 1
-            glColor3f(1.0, 1.0, 1.0);
-            glutWireSphere(0.1, 50, 50);
-            glRotatef(angle2, 0, 1, 0.5);
-            {
-                glTranslated(0.2, 0, 0);
-                {
-                    glColor3f(1.0, 0.0, 0.0);
-                    // Satellite
-                    glutWireSphere(0.05, 50, 50);
-                }
-                glTranslated(-0.2, 0, 0);
-            }
-            glRotatef(-angle2, 0, 1, 0.5);
-        }
-        glTranslated(-0.6, 0, 0);
-    }
-    glRotatef(-angle1, 0, 1, 0);
-    glRotatef(angle3, 0, 0.5, 0.5);
-    {
-        glTranslated(0.4, 0, 0);
-        {
-            // Planet 2
-            glColor3f(0.0, 1.0, 0.0);
-            glutWireSphere(0.1, 50, 50);
-        }
-        glTranslated(-0.4, 0, 0);
-    }
-    glRotatef(-angle3, 0, 0.5, 0.5);
-
-
-    glPushMatrix ();
-    int i, j;
-    glRotatef(85.0, 1.0, 1.0, 1.0);
-    for (j = 0; j <= 8; j++) {
-        glBegin(GL_LINE_STRIP);
-        for (i = 0; i <= 30; i++)
-            glEvalCoord2f((GLfloat)i/30.0, (GLfloat)j/8.0);
-        glEnd();
-        glBegin(GL_LINE_STRIP);
-        for (i = 0; i <= 30; i++)
-            glEvalCoord2f((GLfloat)j/8.0, (GLfloat)i/30.0);
-        glEnd();
-    }
-    glEvalMesh2( GL_LINE, 0, 20, 0, 20 );
-    glPopMatrix ();
+    glColor3f(0.0, 1.0, 0.0);
+    glutWireSphere(0.1, 50, 50);
+    // Bezier
+//    glPushMatrix();
+    glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &ctrlPoints[0][0][0]);
+    glMapGrid2f(20, 0.0, 1.0, 20, 0.0, 1.0);
+    glEvalMesh2(GL_FILL, 0, 20, 0, 20);
+    // NURB
+    gluBeginSurface(Nurb);
+    gluNurbsSurface(Nurb, 8, knots, 8, knots, 4 * 3, 3, &ctrlPoints2[0][0][0], 4, 4, GL_MAP2_VERTEX_3);
+    gluEndSurface(Nurb);
+//    glPopMatrix();
 }
 
 static void display() {
@@ -218,16 +204,46 @@ static void idle() {
     }
 }
 
+void init()
+{
+    glClearColor(0.0, 0.0, 0.0, 1.0);
+//    glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4, 0, 1, 12, 4, &ctrlPoints[0][0][0]);
+    glEnable(GL_MAP2_VERTEX_3);
+//    glMapGrid2f(20, 0.0, 1.0, 20, 0.0, 1.0);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST);
+    //代码开关4：取消下面两行代码，查看曲面显示效果差异
+    //打开自动法矢量开关
+    glEnable(GL_AUTO_NORMAL);
+    //允许正则化法矢量
+    glEnable(GL_NORMALIZE);
+
+    GLfloat ambient[] = { 0.4, 0.6, 0.2, 1.0 };
+    GLfloat position[] = { 0.0, 1.0, 3.0, 1.0 };
+    GLfloat mat_diffuse[] = { 0.2, 0.4, 0.8, 1.0 };
+    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat mat_shininess[] = { 80.0 };
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
+    glLightfv(GL_LIGHT0, GL_POSITION, position);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+    Nurb = gluNewNurbsRenderer();
+    gluNurbsProperty(Nurb, GLU_SAMPLING_TOLERANCE, 5.0);
+    gluNurbsProperty(Nurb, GLU_DISPLAY_MODE, GLU_FILL);
+}
+
 int main(int argc, char *argv[]) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE | GLUT_DEPTH);
     glutInitWindowSize(SCR_WIDTH, SCR_HEIGHT);
     glutInitWindowPosition(0, 0);
     glutCreateWindow("My Dream Car");
-    glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4,0, 1, 12, 4, &ctrlPoints[0][0][0]);
-    glEnable(GL_MAP2_VERTEX_3);
+    init();
     glEnable(GL_DEPTH_TEST);
-    glShadeModel(GL_FLAT);
     glClearColor(0.f, 0.f, 0.f, 1.0f);
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
