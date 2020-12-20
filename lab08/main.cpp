@@ -28,6 +28,16 @@ void modeling() {
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     // Center Star
     glColor3f(0.0, 0.0, 1.0);
+    GLfloat sun_mat_ambient[]   = {0.0f, 0.0f, 0.0f, 1.0f};  //定义材质的环境光颜色，为0
+    GLfloat sun_mat_diffuse[]   = {0.0f, 0.0f, 0.0f, 1.0f};  //定义材质的漫反射光颜色，为0
+    GLfloat sun_mat_specular[] = {0.0f, 0.0f, 0.0f, 1.0f};   //定义材质的镜面反射光颜色，为0
+    GLfloat sun_mat_emission[] = {0.8f, 0.0f, 0.0f, 1.0f};   //定义材质的辐射广颜色，为偏红色
+    GLfloat sun_mat_shininess   = 0.0f;
+    glMaterialfv(GL_FRONT, GL_AMBIENT,    sun_mat_ambient);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE,    sun_mat_diffuse);
+    glMaterialfv(GL_FRONT, GL_SPECULAR,   sun_mat_specular);
+    glMaterialfv(GL_FRONT, GL_EMISSION,   sun_mat_emission);
+    glMaterialf (GL_FRONT, GL_SHININESS, sun_mat_shininess);
     glutSolidSphere(0.2, 50, 50);
 
     glPushMatrix();
@@ -36,6 +46,16 @@ void modeling() {
         glTranslated(0.6, 0, 0);
         // Planet 1
         glColor3f(1.0, 1.0, 1.0);
+        GLfloat earth_mat_ambient[]   = {0.0f, 0.0f, 1.0f, 1.0f};  //定义材质的环境光颜色，骗蓝色
+        GLfloat earth_mat_diffuse[]   = {0.0f, 0.0f, 0.5f, 1.0f};  //定义材质的漫反射光颜色，偏蓝色
+        GLfloat earth_mat_specular[] = {1.0f, 0.0f, 0.0f, 1.0f};   //定义材质的镜面反射光颜色，红色
+        GLfloat earth_mat_emission[] = {0.0f, 0.0f, 0.0f, 1.0f};   //定义材质的辐射光颜色，为0
+        GLfloat earth_mat_shininess   = 30.0f;
+        glMaterialfv(GL_FRONT, GL_AMBIENT,    earth_mat_ambient);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE,    earth_mat_diffuse);
+        glMaterialfv(GL_FRONT, GL_SPECULAR,   earth_mat_specular);
+        glMaterialfv(GL_FRONT, GL_EMISSION,   earth_mat_emission);
+        glMaterialf (GL_FRONT, GL_SHININESS, earth_mat_shininess);
         glutSolidSphere(0.1, 50, 50);
         glPushMatrix();
         {
@@ -192,14 +212,46 @@ static void idle() {
     }
 }
 
+static void init()
+{
+//    glShadeModel ( GL_SMOOTH );
+    glEnable(GL_DEPTH_TEST);
+    glClearColor(0.f, 0.f, 0.f, 1.0f);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_AUTO_NORMAL);
+    glEnable(GL_NORMALIZE);
+
+    GLfloat mat_diffuse[] = {0.2, 0.4, 0.8, 1.0};
+    GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat mat_shininess[] = {80.0};
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+    GLfloat sun_light_position[] = {0.0f, 0.0f, 0.0f, 1.0f}; //光源的位置在世界坐标系圆心，齐次坐标形式
+    GLfloat sun_light_ambient[]   = {0.0f, 0.0f, 0.0f, 1.0f}; //RGBA模式的环境光，为0
+    GLfloat sun_light_diffuse[]   = {1.0f, 1.0f, 1.0f, 1.0f}; //RGBA模式的漫反射光，全白光
+    GLfloat sun_light_specular[] = {1.0f, 1.0f, 1.0f, 1.0f};  //RGBA模式下的镜面光 ，全白光
+    glLightfv(GL_LIGHT0, GL_POSITION, sun_light_position);
+    glLightfv(GL_LIGHT0, GL_AMBIENT,   sun_light_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE,   sun_light_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, sun_light_specular);
+
+//    glMaterialfv(GL_FRONT, GL_DIFFUSE, mat_diffuse);
+//    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+//    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+}
+
 int main(int argc, char *argv[]) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_MULTISAMPLE | GLUT_DEPTH);
     glutInitWindowSize(SCR_WIDTH, SCR_HEIGHT);
     glutInitWindowPosition(0, 0);
     glutCreateWindow("My Solar System");
-    glEnable(GL_DEPTH_TEST);
-    glClearColor(0.f, 0.f, 0.f, 1.0f);
+
+    init();
+
+    // GLUT Bindings
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
     glutMotionFunc(drag);
