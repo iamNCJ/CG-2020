@@ -6,6 +6,9 @@
 #include <GL/freeglut.h>
 #endif
 
+#include <cstdio>
+#include <cstdlib>
+
 int SCR_WIDTH = 800;
 int SCR_HEIGHT = 600;
 
@@ -25,41 +28,35 @@ void modeling() {
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     // Center Star
     glColor3f(0.0, 0.0, 1.0);
-    glutWireSphere(0.2, 50, 50);
+    glutSolidSphere(0.2, 50, 50);
 
-    glRotatef(angle1, 0, 1, 0);
+    glPushMatrix();
     {
+        glRotatef(angle1, 0, 1, 0);
         glTranslated(0.6, 0, 0);
+        // Planet 1
+        glColor3f(1.0, 1.0, 1.0);
+        glutSolidSphere(0.1, 50, 50);
+        glPushMatrix();
         {
-            // Planet 1
-            glColor3f(1.0, 1.0, 1.0);
-            glutWireSphere(0.1, 50, 50);
             glRotatef(angle2, 0, 1, 0.5);
-            {
-                glTranslated(0.2, 0, 0);
-                {
-                    glColor3f(1.0, 0.0, 0.0);
-                    // Satellite
-                    glutWireSphere(0.05, 50, 50);
-                }
-                glTranslated(-0.2, 0, 0);
-            }
-            glRotatef(-angle2, 0, 1, 0.5);
+            glTranslated(0.2, 0, 0);
+            glColor3f(1.0, 0.0, 0.0);
+            // Satellite
+            glutSolidSphere(0.05, 50, 50);
         }
-        glTranslated(-0.6, 0, 0);
+        glPopMatrix();
     }
-    glRotatef(-angle1, 0, 1, 0);
-    glRotatef(angle3, 0, 0.5, 0.5);
+    glPopMatrix();
     {
+        glPushMatrix();
+        glRotatef(angle3, 0, 0.5, 0.5);
         glTranslated(0.4, 0, 0);
-        {
-            // Planet 2
-            glColor3f(0.0, 1.0, 0.0);
-            glutWireSphere(0.1, 50, 50);
-        }
-        glTranslated(-0.4, 0, 0);
+        // Planet 2
+        glColor3f(0.0, 1.0, 0.0);
+        glutSolidSphere(0.1, 50, 50);
     }
-    glRotatef(-angle3, 0, 0.5, 0.5);
+    glPopMatrix();
 }
 
 static void display() {
@@ -146,7 +143,10 @@ static void keyboardUp(unsigned char key, int x, int y) {
         case ' ':
             isSpaceDown = false;
             break;
+        case 27:
+            exit(0);
         default:
+            printf("%d\n", key);
             break;
     }
 }
