@@ -31,6 +31,7 @@ void modeling() {
     float angle3 = 2 * time;
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     // Center Star
+    // as light source
     GLfloat LightPosition[] = {0.0f, 0.0f, 0.0f, 1.0f};
     GLfloat LightAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
     GLfloat LightDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -39,6 +40,7 @@ void modeling() {
     glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, LightSpecular);
+    // material
     GLfloat MatAmbient0[] = {0.0f, 0.0f, 0.0f, 1.0f};
     GLfloat MatDiffuse0[] = {0.0f, 0.0f, 0.0f, 1.0f};
     GLfloat MatSpecular0[] = {0.0f, 0.0f, 0.0f, 1.0f};
