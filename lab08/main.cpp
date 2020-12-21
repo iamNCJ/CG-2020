@@ -35,7 +35,7 @@ void modeling() {
     GLfloat LightPosition[] = {0.0f, 0.0f, 0.0f, 1.0f};
     GLfloat LightAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
     GLfloat LightDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
-    GLfloat LightSpecular[] = {1.0f, 1.0f, 1.0f, 1.0f};
+    GLfloat LightSpecular[] = {1.0f, 0.0f, 0.0f, 1.0f};
     glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
     glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
@@ -60,7 +60,7 @@ void modeling() {
         // Planet 1
         GLfloat MatAmbient1[] = {0.0f, 0.0f, 1.0f, 1.0f};
         GLfloat MatDiffuse1[] = {0.0f, 0.0f, 0.5f, 1.0f};
-        GLfloat MatSpecular1[] = {1.0f, 0.0f, 0.0f, 1.0f};
+        GLfloat MatSpecular1[] = {1.0f, 1.0f, 1.0f, 1.0f};
         GLfloat MatEmission1[] = {0.0f, 0.0f, 0.0f, 1.0f};
         GLfloat MatShininess1 = 30.0f;
         glMaterialfv(GL_FRONT, GL_AMBIENT, MatAmbient1);
@@ -76,7 +76,7 @@ void modeling() {
             // Satellite
             GLfloat MatAmbient2[] = {0.0f, 1.0f, 0.0f, 1.0f};
             GLfloat MatDiffuse2[] = {0.0f, 0.5f, 0.0f, 1.0f};
-            GLfloat MatSpecular2[] = {1.0f, 0.0f, 0.0f, 1.0f};
+            GLfloat MatSpecular2[] = {1.0f, 1.0f, 1.0f, 1.0f};
             GLfloat MatEmission2[] = {0.0f, 0.0f, 0.0f, 1.0f};
             GLfloat MatShininess2 = 30.0f;
             glMaterialfv(GL_FRONT, GL_AMBIENT, MatAmbient2);
@@ -96,7 +96,7 @@ void modeling() {
         // Planet 2
         GLfloat MatAmbient3[] = {1.0f, 1.0f, 0.0f, 1.0f};
         GLfloat MatDiffuse3[] = {0.5f, 0.5f, 0.0f, 1.0f};
-        GLfloat MatSpecular3[] = {1.0f, 0.0f, 0.0f, 1.0f};
+        GLfloat MatSpecular3[] = {1.0f, 1.0f, 1.0f, 1.0f};
         GLfloat MatEmission3[] = {0.0f, 0.0f, 0.0f, 1.0f};
         GLfloat MatShininess3 = 30.0f;
         glMaterialfv(GL_FRONT, GL_AMBIENT, MatAmbient3);
