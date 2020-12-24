@@ -28,7 +28,7 @@ float viewDirX = 0.0f, viewDirY = 0.0f, viewDirZ = -1.0f, lastViewDirX, lastView
 bool isShiftDown, isWDown, isSDown, isADown, isDDown, isSpaceDown;
 
 GLuint textures[4];
-GLUquadricObj* pGlUquadric;
+GLUquadricObj *pGlUquadric;
 
 static void DrawPlanet(double radius, GLuint texture) {
     gluQuadricTexture(pGlUquadric, GLU_TRUE);
@@ -439,11 +439,11 @@ static void init() {
 
     pGlUquadric = gluNewQuadric();
 
-    textures[0] = loadTexture((char *)"../assets/sun.jpg");
-    textures[1] = loadTexture((char *)"../assets/earth.jpg");
-    textures[2] = loadTexture((char *)"../assets/moon.jpg");
-    textures[3] = loadTexture((char *)"../assets/venus.jpg");
-    loadSkyBox((char *)"../assets/skybox.jpg");
+    textures[0] = loadTexture((char *) "../assets/sun.jpg");
+    textures[1] = loadTexture((char *) "../assets/earth.jpg");
+    textures[2] = loadTexture((char *) "../assets/moon.jpg");
+    textures[3] = loadTexture((char *) "../assets/venus.jpg");
+    loadSkyBox((char *) "../assets/skybox.jpg");
 }
 
 int main(int argc, char *argv[]) {
