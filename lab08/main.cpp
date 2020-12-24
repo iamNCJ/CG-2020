@@ -47,6 +47,9 @@ static void DrawPlanet(double radius, GLuint texture) {
 static void DrawSkyBox() {
     GLfloat fExtent = 15.0f;
 
+    glDisable(GL_TEXTURE_GEN_S);
+    glDisable(GL_TEXTURE_GEN_T);
+    glDisable(GL_TEXTURE_GEN_R);
     glEnable(GL_TEXTURE_CUBE_MAP);
 
     glBegin(GL_QUADS);
@@ -66,7 +69,7 @@ static void DrawSkyBox() {
 
 
     ///////////////////////////////////////////////
-    //  Postive X
+    //  Positive X
     glTexCoord3f(1.0f, -1.0f, -1.0f);
     glVertex3f(fExtent, -fExtent, -fExtent);
 
@@ -141,19 +144,13 @@ static void DrawSkyBox() {
     glEnd();
 
     glDisable(GL_TEXTURE_CUBE_MAP);
-}
-
-static void modeling() {
-    // Sky Box is manually textured
-    glDisable(GL_TEXTURE_GEN_S);
-    glDisable(GL_TEXTURE_GEN_T);
-    glDisable(GL_TEXTURE_GEN_R);
-    DrawSkyBox();
-
-    // Use texgen to apply cube map
     glEnable(GL_TEXTURE_GEN_S);
     glEnable(GL_TEXTURE_GEN_T);
     glEnable(GL_TEXTURE_GEN_R);
+}
+
+static void modeling() {
+    DrawSkyBox();
 
     float angle1 = 1 * localTime;
     float angle2 = 3 * localTime;
