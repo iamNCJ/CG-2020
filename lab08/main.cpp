@@ -27,7 +27,7 @@ float viewDirX = 0.0f, viewDirY = 0.0f, viewDirZ = -1.0f, lastViewDirX, lastView
 
 bool isShiftDown, isWDown, isSDown, isADown, isDDown, isSpaceDown;
 
-GLuint textures[10];
+GLuint textures[4];
 GLUquadricObj* pGlUquadric;
 
 static void DrawPlanet(double radius, GLuint texture) {
@@ -44,7 +44,117 @@ static void DrawPlanet(double radius, GLuint texture) {
     gluQuadricTexture(pGlUquadric, GLU_FALSE);
 }
 
+static void DrawSkyBox() {
+    GLfloat fExtent = 15.0f;
+
+    glEnable(GL_TEXTURE_CUBE_MAP);
+
+    glBegin(GL_QUADS);
+    //////////////////////////////////////////////
+    // Negative X
+    glTexCoord3f(-1.0f, -1.0f, 1.0f);
+    glVertex3f(-fExtent, -fExtent, fExtent);
+
+    glTexCoord3f(-1.0f, -1.0f, -1.0f);
+    glVertex3f(-fExtent, -fExtent, -fExtent);
+
+    glTexCoord3f(-1.0f, 1.0f, -1.0f);
+    glVertex3f(-fExtent, fExtent, -fExtent);
+
+    glTexCoord3f(-1.0f, 1.0f, 1.0f);
+    glVertex3f(-fExtent, fExtent, fExtent);
+
+
+    ///////////////////////////////////////////////
+    //  Postive X
+    glTexCoord3f(1.0f, -1.0f, -1.0f);
+    glVertex3f(fExtent, -fExtent, -fExtent);
+
+    glTexCoord3f(1.0f, -1.0f, 1.0f);
+    glVertex3f(fExtent, -fExtent, fExtent);
+
+    glTexCoord3f(1.0f, 1.0f, 1.0f);
+    glVertex3f(fExtent, fExtent, fExtent);
+
+    glTexCoord3f(1.0f, 1.0f, -1.0f);
+    glVertex3f(fExtent, fExtent, -fExtent);
+
+
+    ////////////////////////////////////////////////
+    // Negative Z
+    glTexCoord3f(-1.0f, -1.0f, -1.0f);
+    glVertex3f(-fExtent, -fExtent, -fExtent);
+
+    glTexCoord3f(1.0f, -1.0f, -1.0f);
+    glVertex3f(fExtent, -fExtent, -fExtent);
+
+    glTexCoord3f(1.0f, 1.0f, -1.0f);
+    glVertex3f(fExtent, fExtent, -fExtent);
+
+    glTexCoord3f(-1.0f, 1.0f, -1.0f);
+    glVertex3f(-fExtent, fExtent, -fExtent);
+
+
+    ////////////////////////////////////////////////
+    // Positive Z
+    glTexCoord3f(1.0f, -1.0f, 1.0f);
+    glVertex3f(fExtent, -fExtent, fExtent);
+
+    glTexCoord3f(-1.0f, -1.0f, 1.0f);
+    glVertex3f(-fExtent, -fExtent, fExtent);
+
+    glTexCoord3f(-1.0f, 1.0f, 1.0f);
+    glVertex3f(-fExtent, fExtent, fExtent);
+
+    glTexCoord3f(1.0f, 1.0f, 1.0f);
+    glVertex3f(fExtent, fExtent, fExtent);
+
+
+    //////////////////////////////////////////////////
+    // Positive Y
+    glTexCoord3f(-1.0f, 1.0f, 1.0f);
+    glVertex3f(-fExtent, fExtent, fExtent);
+
+    glTexCoord3f(-1.0f, 1.0f, -1.0f);
+    glVertex3f(-fExtent, fExtent, -fExtent);
+
+    glTexCoord3f(1.0f, 1.0f, -1.0f);
+    glVertex3f(fExtent, fExtent, -fExtent);
+
+    glTexCoord3f(1.0f, 1.0f, 1.0f);
+    glVertex3f(fExtent, fExtent, fExtent);
+
+
+    ///////////////////////////////////////////////////
+    // Negative Y
+    glTexCoord3f(-1.0f, -1.0f, -1.0f);
+    glVertex3f(-fExtent, -fExtent, -fExtent);
+
+    glTexCoord3f(-1.0f, -1.0f, 1.0f);
+    glVertex3f(-fExtent, -fExtent, fExtent);
+
+    glTexCoord3f(1.0f, -1.0f, 1.0f);
+    glVertex3f(fExtent, -fExtent, fExtent);
+
+    glTexCoord3f(1.0f, -1.0f, -1.0f);
+    glVertex3f(fExtent, -fExtent, -fExtent);
+    glEnd();
+
+    glDisable(GL_TEXTURE_CUBE_MAP);
+}
+
 static void modeling() {
+    // Sky Box is manually textured
+    glDisable(GL_TEXTURE_GEN_S);
+    glDisable(GL_TEXTURE_GEN_T);
+    glDisable(GL_TEXTURE_GEN_R);
+    DrawSkyBox();
+
+    // Use texgen to apply cube map
+    glEnable(GL_TEXTURE_GEN_S);
+    glEnable(GL_TEXTURE_GEN_T);
+    glEnable(GL_TEXTURE_GEN_R);
+
     float angle1 = 1 * localTime;
     float angle2 = 3 * localTime;
     float angle3 = 2 * localTime;
@@ -281,13 +391,41 @@ static GLuint loadTexture(char *file) {
     unsigned char *data = stbi_load(file, &width, &height, &nrChannels, 0);
     glGenTextures(1, &ID);
     glBindTexture(GL_TEXTURE_2D, ID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
     glGenerateMipmap(GL_TEXTURE_2D);
     stbi_image_free(data);
+
+    return ID;
+}
+
+static GLuint loadSkyBox(char *file) {
+    int width, height, nrChannels;
+    GLuint ID;
+
+    unsigned char *data = stbi_load(file, &width, &height, &nrChannels, 0);
+    glGenTextures(1, &ID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, ID);
+    for (int i = 0; i < 6; i++) {
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    }
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    stbi_image_free(data);
+
+    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
+    glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
+    glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
+
+    // Enable cube mapping, and set texture environment to decal
+//    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+//    glDisable(GL_TEXTURE_CUBE_MAP);
 
     return ID;
 }
@@ -308,6 +446,7 @@ static void init() {
     textures[1] = loadTexture((char *)"../assets/earth.jpg");
     textures[2] = loadTexture((char *)"../assets/moon.jpg");
     textures[3] = loadTexture((char *)"../assets/venus.jpg");
+    loadSkyBox((char *)"../assets/skybox.jpg");
 }
 
 int main(int argc, char *argv[]) {
