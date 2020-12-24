@@ -1,4 +1,5 @@
 #define GL_SILENCE_DEPRECATION
+#define STB_IMAGE_IMPLEMENTATION
 
 #ifdef __APPLE__
 
@@ -12,12 +13,13 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include "stb_image.h"
 
 int SCR_WIDTH = 800;
 int SCR_HEIGHT = 600;
 
 int lastMouseX, lastMouseY;
-int time = 0;
+int localTime = 0;
 
 float angle = 60.0;
 float cameraX = 0.0f, cameraY = 0.0f, cameraZ = 2.0f;
@@ -25,17 +27,34 @@ float viewDirX = 0.0f, viewDirY = 0.0f, viewDirZ = -1.0f, lastViewDirX, lastView
 
 bool isShiftDown, isWDown, isSDown, isADown, isDDown, isSpaceDown;
 
-void modeling() {
-    float angle1 = 1 * time;
-    float angle2 = 3 * time;
-    float angle3 = 2 * time;
+GLuint textures[10];
+GLUquadricObj* pGlUquadric;
+
+static void DrawPlanet(double radius, GLuint texture) {
+    gluQuadricTexture(pGlUquadric, GLU_TRUE);
+    glPushAttrib(GL_ENABLE_BIT | GL_TEXTURE_BIT);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    gluSphere(pGlUquadric, radius, 50, 50);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    //glDisable(GL_TEXTURE_2D);
+
+    glPopAttrib();
+    gluQuadricTexture(pGlUquadric, GLU_FALSE);
+}
+
+static void modeling() {
+    float angle1 = 1 * localTime;
+    float angle2 = 3 * localTime;
+    float angle3 = 2 * localTime;
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     // Center Star
     // as light source
     GLfloat LightPosition[] = {0.0f, 0.0f, 0.0f, 1.0f};
     GLfloat LightAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
     GLfloat LightDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
-    GLfloat LightSpecular[] = {1.0f, 0.0f, 0.0f, 1.0f};
+    GLfloat LightSpecular[] = {1.0f, 1.0f, 1.0f, 1.0f};
     glLightfv(GL_LIGHT0, GL_POSITION, LightPosition);
     glLightfv(GL_LIGHT0, GL_AMBIENT, LightAmbient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, LightDiffuse);
@@ -44,22 +63,22 @@ void modeling() {
     GLfloat MatAmbient0[] = {0.0f, 0.0f, 0.0f, 1.0f};
     GLfloat MatDiffuse0[] = {0.0f, 0.0f, 0.0f, 1.0f};
     GLfloat MatSpecular0[] = {0.0f, 0.0f, 0.0f, 1.0f};
-    GLfloat MatEmission0[] = {0.8f, 0.0f, 0.0f, 1.0f};
+    GLfloat MatEmission0[] = {0.8f, 0.8f, 0.8f, 1.0f};
     GLfloat MatShininess0 = 0.0f;
     glMaterialfv(GL_FRONT, GL_AMBIENT, MatAmbient0);
     glMaterialfv(GL_FRONT, GL_DIFFUSE, MatDiffuse0);
     glMaterialfv(GL_FRONT, GL_SPECULAR, MatSpecular0);
     glMaterialfv(GL_FRONT, GL_EMISSION, MatEmission0);
     glMaterialf(GL_FRONT, GL_SHININESS, MatShininess0);
-    glutSolidSphere(0.2, 50, 50);
+    DrawPlanet(0.2, textures[0]);
 
     glPushMatrix();
     {
         glRotatef(angle1, 0, 1, 0);
         glTranslated(0.6, 0, 0);
         // Planet 1
-        GLfloat MatAmbient1[] = {0.0f, 0.0f, 1.0f, 1.0f};
-        GLfloat MatDiffuse1[] = {0.0f, 0.0f, 0.5f, 1.0f};
+        GLfloat MatAmbient1[] = {1.0f, 1.0f, 1.0f, 1.0f};
+        GLfloat MatDiffuse1[] = {0.5f, 0.5f, 0.5f, 1.0f};
         GLfloat MatSpecular1[] = {1.0f, 1.0f, 1.0f, 1.0f};
         GLfloat MatEmission1[] = {0.0f, 0.0f, 0.0f, 1.0f};
         GLfloat MatShininess1 = 30.0f;
@@ -68,14 +87,14 @@ void modeling() {
         glMaterialfv(GL_FRONT, GL_SPECULAR, MatSpecular1);
         glMaterialfv(GL_FRONT, GL_EMISSION, MatEmission1);
         glMaterialf(GL_FRONT, GL_SHININESS, MatShininess1);
-        glutSolidSphere(0.1, 50, 50);
+        DrawPlanet(0.1, textures[1]);
         glPushMatrix();
         {
             glRotatef(angle2, 0, 1, 0.5);
             glTranslated(0.2, 0, 0);
             // Satellite
-            GLfloat MatAmbient2[] = {0.0f, 1.0f, 0.0f, 1.0f};
-            GLfloat MatDiffuse2[] = {0.0f, 0.5f, 0.0f, 1.0f};
+            GLfloat MatAmbient2[] = {1.0f, 1.0f, 1.0f, 1.0f};
+            GLfloat MatDiffuse2[] = {0.5f, 0.5f, 0.5f, 1.0f};
             GLfloat MatSpecular2[] = {1.0f, 1.0f, 1.0f, 1.0f};
             GLfloat MatEmission2[] = {0.0f, 0.0f, 0.0f, 1.0f};
             GLfloat MatShininess2 = 30.0f;
@@ -84,7 +103,8 @@ void modeling() {
             glMaterialfv(GL_FRONT, GL_SPECULAR, MatSpecular2);
             glMaterialfv(GL_FRONT, GL_EMISSION, MatEmission2);
             glMaterialf(GL_FRONT, GL_SHININESS, MatShininess2);
-            glutSolidSphere(0.05, 50, 50);
+//            glutSolidSphere(0.05, 50, 50);
+            DrawPlanet(0.05, textures[2]);
         }
         glPopMatrix();
     }
@@ -94,8 +114,8 @@ void modeling() {
         glRotatef(angle3, 0, 0.5, 0.5);
         glTranslated(0.4, 0, 0);
         // Planet 2
-        GLfloat MatAmbient3[] = {1.0f, 1.0f, 0.0f, 1.0f};
-        GLfloat MatDiffuse3[] = {0.5f, 0.5f, 0.0f, 1.0f};
+        GLfloat MatAmbient3[] = {1.0f, 1.0f, 1.0f, 1.0f};
+        GLfloat MatDiffuse3[] = {0.5f, 0.5f, 0.5f, 1.0f};
         GLfloat MatSpecular3[] = {1.0f, 1.0f, 1.0f, 1.0f};
         GLfloat MatEmission3[] = {0.0f, 0.0f, 0.0f, 1.0f};
         GLfloat MatShininess3 = 30.0f;
@@ -104,7 +124,8 @@ void modeling() {
         glMaterialfv(GL_FRONT, GL_SPECULAR, MatSpecular3);
         glMaterialfv(GL_FRONT, GL_EMISSION, MatEmission3);
         glMaterialf(GL_FRONT, GL_SHININESS, MatShininess3);
-        glutSolidSphere(0.1, 50, 50);
+//        glutSolidSphere(0.1, 50, 50);
+        DrawPlanet(0.1, textures[3]);
     }
     glPopMatrix();
 }
@@ -227,7 +248,7 @@ static void specialUp(int key, int x, int y) {
 #endif
 
 static void idle() {
-    time = glutGet(GLUT_ELAPSED_TIME) / 10;
+    localTime = glutGet(GLUT_ELAPSED_TIME) / 10;
     glutPostRedisplay();
     if (isShiftDown) {
         cameraY -= 0.01;
@@ -253,6 +274,24 @@ static void idle() {
     }
 }
 
+static GLuint loadTexture(char *file) {
+    int width, height, nrChannels;
+    GLuint ID;
+
+    unsigned char *data = stbi_load(file, &width, &height, &nrChannels, 0);
+    glGenTextures(1, &ID);
+    glBindTexture(GL_TEXTURE_2D, ID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+    stbi_image_free(data);
+
+    return ID;
+}
+
 static void init() {
     glClearColor(0.f, 0.f, 0.f, 1.0f);
     glDepthFunc(GL_LESS);
@@ -262,6 +301,13 @@ static void init() {
     glEnable(GL_LIGHT0);
     glEnable(GL_LIGHTING);
     glEnable(GL_DEPTH_TEST);
+
+    pGlUquadric = gluNewQuadric();
+
+    textures[0] = loadTexture((char *)"../assets/sun.jpg");
+    textures[1] = loadTexture((char *)"../assets/earth.jpg");
+    textures[2] = loadTexture((char *)"../assets/moon.jpg");
+    textures[3] = loadTexture((char *)"../assets/venus.jpg");
 }
 
 int main(int argc, char *argv[]) {
