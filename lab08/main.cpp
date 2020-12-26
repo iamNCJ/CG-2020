@@ -44,6 +44,8 @@ static void DrawPlanet(double radius, GLuint texture) {
     gluQuadricTexture(pGlUquadric, GLU_FALSE);
 }
 
+#ifdef __APPLE__
+
 static void DrawSkyBox() {
     GLfloat fExtent = 15.0f;
 
@@ -53,92 +55,63 @@ static void DrawSkyBox() {
     glEnable(GL_TEXTURE_CUBE_MAP);
 
     glBegin(GL_QUADS);
-    //////////////////////////////////////////////
     // Negative X
     glTexCoord3f(-1.0f, -1.0f, 1.0f);
     glVertex3f(-fExtent, -fExtent, fExtent);
-
     glTexCoord3f(-1.0f, -1.0f, -1.0f);
     glVertex3f(-fExtent, -fExtent, -fExtent);
-
     glTexCoord3f(-1.0f, 1.0f, -1.0f);
     glVertex3f(-fExtent, fExtent, -fExtent);
-
     glTexCoord3f(-1.0f, 1.0f, 1.0f);
     glVertex3f(-fExtent, fExtent, fExtent);
 
-
-    ///////////////////////////////////////////////
     //  Positive X
     glTexCoord3f(1.0f, -1.0f, -1.0f);
     glVertex3f(fExtent, -fExtent, -fExtent);
-
     glTexCoord3f(1.0f, -1.0f, 1.0f);
     glVertex3f(fExtent, -fExtent, fExtent);
-
     glTexCoord3f(1.0f, 1.0f, 1.0f);
     glVertex3f(fExtent, fExtent, fExtent);
-
     glTexCoord3f(1.0f, 1.0f, -1.0f);
     glVertex3f(fExtent, fExtent, -fExtent);
 
-
-    ////////////////////////////////////////////////
     // Negative Z
     glTexCoord3f(-1.0f, -1.0f, -1.0f);
     glVertex3f(-fExtent, -fExtent, -fExtent);
-
     glTexCoord3f(1.0f, -1.0f, -1.0f);
     glVertex3f(fExtent, -fExtent, -fExtent);
-
     glTexCoord3f(1.0f, 1.0f, -1.0f);
     glVertex3f(fExtent, fExtent, -fExtent);
-
     glTexCoord3f(-1.0f, 1.0f, -1.0f);
     glVertex3f(-fExtent, fExtent, -fExtent);
 
-
-    ////////////////////////////////////////////////
     // Positive Z
     glTexCoord3f(1.0f, -1.0f, 1.0f);
     glVertex3f(fExtent, -fExtent, fExtent);
-
     glTexCoord3f(-1.0f, -1.0f, 1.0f);
     glVertex3f(-fExtent, -fExtent, fExtent);
-
     glTexCoord3f(-1.0f, 1.0f, 1.0f);
     glVertex3f(-fExtent, fExtent, fExtent);
-
     glTexCoord3f(1.0f, 1.0f, 1.0f);
     glVertex3f(fExtent, fExtent, fExtent);
 
-
-    //////////////////////////////////////////////////
     // Positive Y
     glTexCoord3f(-1.0f, 1.0f, 1.0f);
     glVertex3f(-fExtent, fExtent, fExtent);
-
     glTexCoord3f(-1.0f, 1.0f, -1.0f);
     glVertex3f(-fExtent, fExtent, -fExtent);
-
     glTexCoord3f(1.0f, 1.0f, -1.0f);
     glVertex3f(fExtent, fExtent, -fExtent);
-
     glTexCoord3f(1.0f, 1.0f, 1.0f);
     glVertex3f(fExtent, fExtent, fExtent);
 
-
-    ///////////////////////////////////////////////////
     // Negative Y
     glTexCoord3f(-1.0f, -1.0f, -1.0f);
     glVertex3f(-fExtent, -fExtent, -fExtent);
-
     glTexCoord3f(-1.0f, -1.0f, 1.0f);
     glVertex3f(-fExtent, -fExtent, fExtent);
-
     glTexCoord3f(1.0f, -1.0f, 1.0f);
     glVertex3f(fExtent, -fExtent, fExtent);
-
     glTexCoord3f(1.0f, -1.0f, -1.0f);
     glVertex3f(fExtent, -fExtent, -fExtent);
     glEnd();
@@ -149,15 +122,18 @@ static void DrawSkyBox() {
     glEnable(GL_TEXTURE_GEN_R);
 }
 
-static void modeling() {
-    DrawSkyBox();
+#endif
 
+static void modeling() {
+#ifdef __APPLE__
+    DrawSkyBox();
+#endif
     float angle1 = 1 * localTime;
     float angle2 = 3 * localTime;
     float angle3 = 2 * localTime;
     glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
     // Center Star
-    // as light source
+    // also as light source
     GLfloat LightPosition[] = {0.0f, 0.0f, 0.0f, 1.0f};
     GLfloat LightAmbient[] = {0.0f, 0.0f, 0.0f, 1.0f};
     GLfloat LightDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -210,7 +186,6 @@ static void modeling() {
             glMaterialfv(GL_FRONT, GL_SPECULAR, MatSpecular2);
             glMaterialfv(GL_FRONT, GL_EMISSION, MatEmission2);
             glMaterialf(GL_FRONT, GL_SHININESS, MatShininess2);
-//            glutSolidSphere(0.05, 50, 50);
             DrawPlanet(0.05, textures[2]);
         }
         glPopMatrix();
@@ -231,7 +206,6 @@ static void modeling() {
         glMaterialfv(GL_FRONT, GL_SPECULAR, MatSpecular3);
         glMaterialfv(GL_FRONT, GL_EMISSION, MatEmission3);
         glMaterialf(GL_FRONT, GL_SHININESS, MatShininess3);
-//        glutSolidSphere(0.1, 50, 50);
         DrawPlanet(0.1, textures[3]);
     }
     glPopMatrix();
@@ -399,6 +373,8 @@ static GLuint loadTexture(char *file) {
     return ID;
 }
 
+#ifdef __APPLE__
+
 static GLuint loadSkyBox(char *file) {
     int width, height, nrChannels;
     GLuint ID;
@@ -420,12 +396,10 @@ static GLuint loadSkyBox(char *file) {
     glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
     glTexGeni(GL_R, GL_TEXTURE_GEN_MODE, GL_REFLECTION_MAP);
 
-    // Enable cube mapping, and set texture environment to decal
-//    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-//    glDisable(GL_TEXTURE_CUBE_MAP);
-
     return ID;
 }
+
+#endif
 
 static void init() {
     glClearColor(0.f, 0.f, 0.f, 1.0f);
@@ -443,7 +417,9 @@ static void init() {
     textures[1] = loadTexture((char *) "../assets/earth.jpg");
     textures[2] = loadTexture((char *) "../assets/moon.jpg");
     textures[3] = loadTexture((char *) "../assets/venus.jpg");
+#ifdef __APPLE__
     loadSkyBox((char *) "../assets/skybox.jpg");
+#endif
 }
 
 int main(int argc, char *argv[]) {
