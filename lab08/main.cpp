@@ -115,9 +115,8 @@ static void DrawSkyBox() {
 }
 
 static void modeling() {
-//#ifdef __APPLE__
     DrawSkyBox();
-//#endif
+
     float angle1 = 1 * localTime;
     float angle2 = 3 * localTime;
     float angle3 = 2 * localTime;
