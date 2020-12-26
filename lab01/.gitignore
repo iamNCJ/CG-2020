@@ -2,3 +2,4 @@
 cmake-*/*
 *.ppm
 lab01
+*.out
