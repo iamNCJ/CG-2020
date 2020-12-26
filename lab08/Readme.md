@@ -12,5 +12,4 @@ cmake .
 > **Note**:
 >
 > 1. `GLEW` is only needed on Windows
-> 2. Download the textures from GitHub's release
-
+> 2. Download the textures from GitHub's release and place them under `assets/`
