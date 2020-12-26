@@ -47,9 +47,6 @@ static void DrawPlanet(double radius, GLuint texture) {
 static void DrawSkyBox() {
     GLfloat fExtent = 15.0f;
 
-//    glDisable(GL_TEXTURE_GEN_S);
-//    glDisable(GL_TEXTURE_GEN_T);
-//    glDisable(GL_TEXTURE_GEN_R);
     glEnable(GL_TEXTURE_CUBE_MAP);
 
     glBegin(GL_QUADS);
@@ -115,9 +112,6 @@ static void DrawSkyBox() {
     glEnd();
 
     glDisable(GL_TEXTURE_CUBE_MAP);
-//    glEnable(GL_TEXTURE_GEN_S);
-//    glEnable(GL_TEXTURE_GEN_T);
-//    glEnable(GL_TEXTURE_GEN_R);
 }
 
 static void modeling() {
@@ -411,9 +405,8 @@ static void init() {
     textures[1] = loadTexture((char *) "../assets/earth.jpg");
     textures[2] = loadTexture((char *) "../assets/moon.jpg");
     textures[3] = loadTexture((char *) "../assets/venus.jpg");
-//#ifdef __APPLE__
+
     loadSkyBox((char *) "../assets/skybox.jpg");
-//#endif
 }
 
 int main(int argc, char *argv[]) {

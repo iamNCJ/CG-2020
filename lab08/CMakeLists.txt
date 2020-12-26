@@ -11,7 +11,9 @@ add_executable(lab08 main.cpp)
 
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
+if(WIN32)
 find_package(GLEW REQUIRED)
+endif()
 
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
 
