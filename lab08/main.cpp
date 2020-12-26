@@ -7,6 +7,7 @@
 
 #elif WIN32
 
+#include <GL/glew.h>
 #include <GL/freeglut.h>
 
 #endif
@@ -38,20 +39,17 @@ static void DrawPlanet(double radius, GLuint texture) {
 
     gluSphere(pGlUquadric, radius, 50, 50);
     glBindTexture(GL_TEXTURE_2D, 0);
-    //glDisable(GL_TEXTURE_2D);
 
     glPopAttrib();
     gluQuadricTexture(pGlUquadric, GLU_FALSE);
 }
 
-#ifdef __APPLE__
-
 static void DrawSkyBox() {
     GLfloat fExtent = 15.0f;
 
-    glDisable(GL_TEXTURE_GEN_S);
-    glDisable(GL_TEXTURE_GEN_T);
-    glDisable(GL_TEXTURE_GEN_R);
+//    glDisable(GL_TEXTURE_GEN_S);
+//    glDisable(GL_TEXTURE_GEN_T);
+//    glDisable(GL_TEXTURE_GEN_R);
     glEnable(GL_TEXTURE_CUBE_MAP);
 
     glBegin(GL_QUADS);
@@ -117,17 +115,15 @@ static void DrawSkyBox() {
     glEnd();
 
     glDisable(GL_TEXTURE_CUBE_MAP);
-    glEnable(GL_TEXTURE_GEN_S);
-    glEnable(GL_TEXTURE_GEN_T);
-    glEnable(GL_TEXTURE_GEN_R);
+//    glEnable(GL_TEXTURE_GEN_S);
+//    glEnable(GL_TEXTURE_GEN_T);
+//    glEnable(GL_TEXTURE_GEN_R);
 }
 
-#endif
-
 static void modeling() {
-#ifdef __APPLE__
+//#ifdef __APPLE__
     DrawSkyBox();
-#endif
+//#endif
     float angle1 = 1 * localTime;
     float angle2 = 3 * localTime;
     float angle3 = 2 * localTime;
@@ -367,13 +363,13 @@ static GLuint loadTexture(char *file) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glGenerateMipmap(GL_TEXTURE_2D);
+#ifdef __APPLE__
+    glGenerateMipmap(GL_TEXTURE_2D); // will cause DEP on Windows
+#endif
     stbi_image_free(data);
 
     return ID;
 }
-
-#ifdef __APPLE__
 
 static GLuint loadSkyBox(char *file) {
     int width, height, nrChannels;
@@ -399,8 +395,6 @@ static GLuint loadSkyBox(char *file) {
     return ID;
 }
 
-#endif
-
 static void init() {
     glClearColor(0.f, 0.f, 0.f, 1.0f);
     glDepthFunc(GL_LESS);
@@ -417,9 +411,9 @@ static void init() {
     textures[1] = loadTexture((char *) "../assets/earth.jpg");
     textures[2] = loadTexture((char *) "../assets/moon.jpg");
     textures[3] = loadTexture((char *) "../assets/venus.jpg");
-#ifdef __APPLE__
+//#ifdef __APPLE__
     loadSkyBox((char *) "../assets/skybox.jpg");
-#endif
+//#endif
 }
 
 int main(int argc, char *argv[]) {

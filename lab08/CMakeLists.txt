@@ -11,6 +11,7 @@ add_executable(lab08 main.cpp)
 
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
+find_package(GLEW REQUIRED)
 
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} )
 
@@ -19,5 +20,5 @@ if(APPLE)
     target_link_libraries(lab08 ${OPENGL_LIBRARIES} ${GLUT_LIBRARY})
 elseif(WIN32)
     # for Windows operating system in general
-    target_link_libraries(lab08 PRIVATE GLUT::GLUT)
+    target_link_libraries(lab08 PRIVATE GLUT::GLUT GLEW::GLEW)
 endif()
